@@ -2,11 +2,10 @@ bl_info = {"name": "EasySCULPT Sculpt Environment",
            "author": "CDMJ, Spirou4D, proxe",
            "version": (1, 10, 0),
            "blender": (2, 78, 0),
-           "location": "Toolbar > Misc Tab > EZSCULPT",
+           "location": "",
            "description": "EasySCULPT Sculpt Environs",
            "warning": "WIP Not Finished",
            "category": "Sculpt"}
-
 
 
 import bpy
@@ -64,13 +63,30 @@ class ToggleSnakeClaystrip(bpy.types.Operator):
         return {'FINISHED'}
 
 
+#Create Keymaps list
+addon_keymaps = []
+
 def register():
     bpy.utils.register_class(ToggleCreaseScrape)
     bpy.utils.register_class(ToggleSnakeClaystrip)
 
+    # handle the keymap
+    wm = bpy.context.window_manager
+    km = wm.keyconfigs.addon.keymaps.new(name='Sculpt', space_type='EMPTY')
+    kmi = km.keymap_items.new("sculpt.crease_scrape", 'D', 'PRESS')
+    kmi = km.keymap_items.new("sculpt.snake_claystrip", 'D', 'PRESS', alt=True)
+    addon_keymaps.append(km)
+
 def unregister():
     bpy.utils.unregister_class(ToggleCreaseScrape)
     bpy.utils.unregister_class(ToggleSnakeClaystrip)
+
+    # handle the keymap
+    wm = bpy.context.window_manager
+    for km in addon_keymaps:
+        wm.keyconfigs.addon.keymaps.remove(km)
+    # clear the list
+    del addon_keymaps[:]
 
 if __name__ == "__main__":
     register()
